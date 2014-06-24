@@ -343,19 +343,33 @@
 
 	CGRect toolbarRect = scrollViewRect; // Toolbar frame
 	toolbarRect.size.height = TOOLBAR_HEIGHT; // Default toolbar height
-	mainToolbar = [[ReaderMainToolbar alloc] initWithFrame:toolbarRect document:document]; // ReaderMainToolbar
-	mainToolbar.delegate = self; // ReaderMainToolbarDelegate
-	[self.view addSubview:mainToolbar];
-
-	CGRect pagebarRect = self.view.bounds;; // Pagebar frame
-	pagebarRect.origin.y = (pagebarRect.size.height - PAGEBAR_HEIGHT);
-	pagebarRect.size.height = PAGEBAR_HEIGHT; // Default pagebar height
-	mainPagebar = [[ReaderMainPagebar alloc] initWithFrame:pagebarRect document:document]; // ReaderMainPagebar
-	mainPagebar.delegate = self; // ReaderMainPagebarDelegate
-	[self.view addSubview:mainPagebar];
-
-	if (fakeStatusBar != nil) [self.view addSubview:fakeStatusBar]; // Add status bar background view
-
+	
+  BOOL shouldShowToolbar = YES;
+  BOOL shouldShowPageBar = YES;
+    
+  if ([self.delegate respondsToSelector:@selector(shouldShowToolbar)]) {
+      shouldShowToolbar = [self.delegate shouldShowToolbar];
+  }
+  if ([self.delegate respondsToSelector:@selector(shouldShowPageBar)]) {
+      shouldShowPageBar = [self.delegate shouldShowPageBar];
+  }
+ 	
+ 	if (shouldShowToolbar) {
+	    mainToolbar = [[ReaderMainToolbar alloc] initWithFrame:toolbarRect document:document]; // ReaderMainToolbar
+	    mainToolbar.delegate = self; // ReaderMainToolbarDelegate
+    	[self.view addSubview:mainToolbar];
+  }
+  
+  if (shouldShowPageBar) {
+      CGRect pagebarRect = self.view.bounds;; // Pagebar frame
+      pagebarRect.origin.y = (pagebarRect.size.height - PAGEBAR_HEIGHT);
+      pagebarRect.size.height = PAGEBAR_HEIGHT; // Default pagebar height
+      mainPagebar = [[ReaderMainPagebar alloc] initWithFrame:pagebarRect document:document]; // ReaderMainPagebar
+      mainPagebar.delegate = self; // ReaderMainPagebarDelegate
+      [self.view addSubview:mainPagebar];
+  }
+  if (fakeStatusBar != nil) [self.view addSubview:fakeStatusBar]; // Add status bar background view
+  
 	UITapGestureRecognizer *singleTapOne = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
 	singleTapOne.numberOfTouchesRequired = 1; singleTapOne.numberOfTapsRequired = 1; singleTapOne.delegate = self;
 	[self.view addGestureRecognizer:singleTapOne];
@@ -638,7 +652,26 @@
 				{
 					if ((mainToolbar.hidden == YES) || (mainPagebar.hidden == YES))
 					{
-						[mainToolbar showToolbar]; [mainPagebar showPagebar]; // Show
+              if ([self.delegate respondsToSelector:@selector(willShowControls:)]) {
+                  [self.delegate willShowControls:self];
+              }
+ 
+              BOOL shouldShowToolbar = YES;
+              BOOL shouldShowPageBar = YES;
+ 
+              if ([self.delegate respondsToSelector:@selector(shouldShowToolbar)]) {
+                  shouldShowToolbar = [self.delegate shouldShowToolbar];
+              }
+              if ([self.delegate respondsToSelector:@selector(shouldShowPageBar)]) {
+                  shouldShowPageBar = [self.delegate shouldShowPageBar];
+              }
+ 
+              if (shouldShowToolbar) {
+                  [mainToolbar showToolbar];
+              }
+              if (shouldShowPageBar) {
+                  [mainPagebar showPagebar];
+              }
 					}
 				}
 			}

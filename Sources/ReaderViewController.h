@@ -34,6 +34,10 @@
 @optional // Delegate protocols
 
 - (void)dismissReaderViewController:(ReaderViewController *)viewController;
+- (BOOL)shouldShowToolbar;
+- (BOOL)shouldShowPageBar;
+- (void)willHideControls:(ReaderViewController *)viewController;
+- (void)willShowControls:(ReaderViewController *)viewController;
 
 @end
 

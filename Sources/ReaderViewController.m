@@ -652,26 +652,26 @@
 				{
 					if ((mainToolbar.hidden == YES) || (mainPagebar.hidden == YES))
 					{
-              if ([self.delegate respondsToSelector:@selector(willShowControls:)]) {
-                  [self.delegate willShowControls:self];
-              }
- 
-              BOOL shouldShowToolbar = YES;
-              BOOL shouldShowPageBar = YES;
- 
-              if ([self.delegate respondsToSelector:@selector(shouldShowToolbar)]) {
-                  shouldShowToolbar = [self.delegate shouldShowToolbar];
-              }
-              if ([self.delegate respondsToSelector:@selector(shouldShowPageBar)]) {
-                  shouldShowPageBar = [self.delegate shouldShowPageBar];
-              }
- 
-              if (shouldShowToolbar) {
-                  [mainToolbar showToolbar];
-              }
-              if (shouldShowPageBar) {
-                  [mainPagebar showPagebar];
-              }
+                        if ([self.delegate respondsToSelector:@selector(willShowControls:)]) {
+                            [self.delegate willShowControls:self];
+                        }
+                        
+                        BOOL shouldShowToolbar = YES;
+                        BOOL shouldShowPageBar = YES;
+                        
+                        if ([self.delegate respondsToSelector:@selector(shouldShowToolbar)]) {
+                            shouldShowToolbar = [self.delegate shouldShowToolbar];
+                        }
+                        if ([self.delegate respondsToSelector:@selector(shouldShowPageBar)]) {
+                            shouldShowPageBar = [self.delegate shouldShowPageBar];
+                        }
+                        
+                        if (shouldShowToolbar) {
+                            [mainToolbar showToolbar];
+                        }
+                        if (shouldShowPageBar) {
+                            [mainPagebar showPagebar];
+                        }
 					}
 				}
 			}
@@ -767,7 +767,9 @@
 
 			if (CGRectContainsPoint(areaRect, point) == false) return;
 		}
-
+        if ([self.delegate respondsToSelector:@selector(willHideControls:)]) {
+            [self.delegate willHideControls:self];
+        }
 		[mainToolbar hideToolbar]; [mainPagebar hidePagebar]; // Hide
 
 		lastHideTime = [NSDate date];

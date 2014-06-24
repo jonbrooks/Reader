@@ -755,7 +755,8 @@
 
 - (void)contentView:(ReaderContentView *)contentView touchesBegan:(NSSet *)touches
 {
-	if ((mainToolbar.hidden == NO) || (mainPagebar.hidden == NO))
+	if ((mainToolbar && (mainToolbar.hidden == NO)) ||
+        (mainPagebar && (mainPagebar.hidden == NO)) )
 	{
 		if (touches.count == 1) // Single touches only
 		{

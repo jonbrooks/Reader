@@ -715,19 +715,17 @@
 			NSNumber *key = [NSNumber numberWithInteger:page]; // Page number key
 
 			ReaderContentView *targetView = [contentViews objectForKey:key];
+            
+            //CEP Behavior change: If we're zoomed in at all, a double tap returns us to 100%
+            //(aka minimumZoomScale - the scale that shows the whole page)
+            //Otherwise it zooms in by the standard increment.
+            if (targetView.zoomScale > targetView.minimumZoomScale) {
+                [targetView setZoomScale:targetView.minimumZoomScale animated:YES];
+            } else {
+                [targetView zoomIncrement];
+            }
 
-			switch (recognizer.numberOfTouchesRequired) // Touches count
-			{
-				case 1: // One finger double tap: zoom ++
-				{
-					[targetView zoomIncrement]; break;
-				}
 
-				case 2: // Two finger double tap: zoom --
-				{
-					[targetView zoomDecrement]; break;
-				}
-			}
 
 			return;
 		}

@@ -119,13 +119,18 @@ static inline CGFloat zoomScaleThatFits(CGSize target, CGSize source, CGFloat bf
 		self.delegate = self;
 
 		userInterfaceIdiom = [UIDevice currentDevice].userInterfaceIdiom; // User interface idiom
-
-#ifndef __arm64__ // Only under 32-bit iOS
+        bugFixWidthInset = 0.0f;
+        
+        //iOS 8.0 introduced a bug where UIScrollViews of certain proportions would break paging
+        //if a container view was the exact width of the screen.  bugFixWidthInset adds some padding
+        //to the width to keep this from happening.
 		if (userInterfaceIdiom == UIUserInterfaceIdiomPhone) // UIScrollView bug in iOS 8.0 workaround
 		{
-			if ([[UIDevice currentDevice].systemVersion isEqualToString:@"8.0"]) bugFixWidthInset = 4.0f;
+            //Apply the workaround to any os greater than or equal to iOS 8.0
+            if ([[[UIDevice currentDevice] systemVersion] compare:@"8.0" options:NSNumericSearch] != NSOrderedAscending) {
+                bugFixWidthInset = 4.0f;
+            }
 		}
-#endif // End of only under 32-bit iOS code
 
 		theContentPage = [[ReaderContentPage alloc] initWithURL:fileURL page:page password:phrase];
 
